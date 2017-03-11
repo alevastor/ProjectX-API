@@ -24,6 +24,7 @@ $api->version('v1', function ($api) {
     $api->get('role/{role_name}/permissions', 'App\Http\Controllers\HomeController@getPermissions');
 
     $api->post('login', 'App\Http\Controllers\Auth\LoginController@authenticate');
+    $api->post('register', 'App\Http\Controllers\Auth\RegisterController@postRegister');
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {

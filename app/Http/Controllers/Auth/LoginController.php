@@ -44,15 +44,11 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        try
-        {
-            if(! $token = JWTAuth::attempt($credentials))
-            {
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return $this->response->errorUnauthorized();
             }
-        }
-        catch (JWTException $ex)
-        {
+        } catch (JWTException $ex) {
             return $this->response->errorInternal();
         }
 
@@ -66,16 +62,12 @@ class LoginController extends Controller
 
     public function show()
     {
-        try
-        {
+        try {
             $user = JWTAuth::parseToken()->toUser();
-            if(! $user)
-            {
+            if (!$user) {
                 $this->response->errorNotFound("User not found!");
             }
-        }
-        catch (\Tymon\JWTAuth\Exceptions\JWTException $ex)
-        {
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $ex) {
             return $this->response->error('Something went wrong');
         }
 
@@ -86,17 +78,13 @@ class LoginController extends Controller
     {
         $token = JWTAuth::getToken();
 
-        if(! $token)
-        {
+        if (!$token) {
             $this->response->errorUnauthorized('Token is invalid');
         }
 
-        try
-        {
+        try {
             $refreshedToken = JWTAuth::refresh($token);
-        }
-        catch (JWTException $ex)
-        {
+        } catch (JWTException $ex) {
             $this->response->error('Something went wrong');
         }
 
@@ -106,14 +94,13 @@ class LoginController extends Controller
     public function destroy()
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if(! $user)
-        {
+        if (!$user) {
             // fail the delete process
             return 'failed to delete user';
         }
 
         //delete the user
-        return 'user \''.$user->name.'\' will be deleted';
+        return 'user \'' . $user->name . '\' will be deleted';
         //$user->delete();
     }
 }
