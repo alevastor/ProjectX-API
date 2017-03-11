@@ -23,8 +23,8 @@ $api->version('v1', function ($api) {
     $api->post('role/permission/add', 'App\Http\Controllers\HomeController@attachPermission');
     $api->get('role/{role_name}/permissions', 'App\Http\Controllers\HomeController@getPermissions');
 
-    $api->post('login', 'App\Http\Controllers\Auth\LoginController@authenticate');
-    $api->post('register', 'App\Http\Controllers\Auth\RegisterController@postRegister');
+    $api->post('users/login', 'App\Http\Controllers\Auth\LoginController@authenticate');
+    $api->post('users/register', 'App\Http\Controllers\Auth\RegisterController@postRegister');
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {

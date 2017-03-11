@@ -23,33 +23,22 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    //public function __construct()
-    //{
-    //    $this->middleware('guest', ['except' => 'logout']);
-    //}
-
     public function authenticate(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
+        $credentials = array(
+            'Person_Email' => $credentials['email'],
+            'Person_Password' => $credentials['password']
+        );
+
         try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return $this->response->errorUnauthorized();
+            //if (!$token = JWTAuth::attempt($credentials)) {
+            if (!$token = JWTAuth::attempt(["Person_Email" => $credentials['Person_Email'], "password" => $credentials['Person_Password']])) {
+                return response()->json(['error' => 'invalid_credentials'], 401);
             }
         } catch (JWTException $ex) {
-            return $this->response->errorInternal();
+            return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
         return $this->response->array(compact('token'))->setStatusCode(200);

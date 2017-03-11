@@ -10,7 +10,9 @@ class User extends Authenticatable
 {
     use Notifiable, EntrustUserTrait;
 
-    protected $table ='Persons';
+    protected $table = 'Persons';
+    public $timestamps = false;
+    protected $primaryKey = 'Person_ID';
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'Person_Login', 'Person_Email', 'Person_Password', 'Person_LastName', 'Person_FirstName', 'Person_Description',
     ];
 
     /**
@@ -27,6 +29,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'Person_Password', 'Person_Email',
     ];
+
+    public function getAuthPassword() {
+        return $this->Person_Password;
+    }
 }
