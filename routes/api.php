@@ -32,6 +32,12 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
     $api->get('user', 'App\Http\Controllers\Auth\LoginController@show');
 
+    $api->get('user/followers/', 'App\Http\Controllers\Auth\LoginController@getUserFollowers');
+
+    $api->get('user/follow/', 'App\Http\Controllers\Auth\LoginController@followUser');
+
+    $api->get('user/unfollow/', 'App\Http\Controllers\Auth\LoginController@unfollowUser');
+
     $api->get('token', 'App\Http\Controllers\Auth\LoginController@getToken');
 
     $api->get('user/delete', 'App\Http\Controllers\Auth\LoginController@destroy');

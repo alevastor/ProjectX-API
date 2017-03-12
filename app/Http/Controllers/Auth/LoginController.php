@@ -92,4 +92,67 @@ class LoginController extends Controller
         return 'user \'' . $user->name . '\' will be deleted';
         //$user->delete();
     }
+
+    // TODO: get user_id from param, default is current user
+    public function getUserFollowers()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user) {
+            $this->response->errorUnauthorized('Token is invalid');
+        }
+        $followers = $user->followers;
+        return $this->response->array(compact('followers'))->setStatusCode(200);
+    }
+
+    public function followUser(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user) {
+            $this->response->errorUnauthorized('Token is invalid');
+        }
+        $parameters = $request->only('user_id');
+        $user2 = \App\User::where('Person_ID', intval($parameters['user_id']))->first();
+        if (!$user2) {
+            $this->response->errorNotFound('User with such id not found');
+        }
+        if($user2 == $user)
+        {
+            return response()->json(['response' => -1], 403);
+        }
+        if(!$user2->followers->where('Person_ID', intval($user['Person_ID']))->first())
+        {
+            $user->follow($user2);
+            return response()->json(['response' => 1], 200);
+        }
+        else
+        {
+            return response()->json(['response' => 4], 200);
+        }
+    }
+
+    public function unfollowUser(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user) {
+            $this->response->errorUnauthorized('Token is invalid');
+        }
+        $parameters = $request->only('user_id');
+        $user2 = \App\User::where('Person_ID', intval($parameters['user_id']))->first();
+        if (!$user2) {
+            $this->response->errorNotFound('User with such id not found');
+        }
+        if($user2 == $user)
+        {
+            return response()->json(['response' => -1], 403);
+        }
+        if(!$user2->followers->where('Person_ID', intval($user['Person_ID']))->first())
+        {
+            return response()->json(['response' => -1], 404);
+        }
+        else
+        {
+            $user->unfollow($user2);
+            return response()->json(['response' => 1], 200);
+        }
+    }
 }
