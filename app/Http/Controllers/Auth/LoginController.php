@@ -41,7 +41,8 @@ class LoginController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-        return $this->response->array(compact('token'))->setStatusCode(200);
+        $user = JWTAuth::setToken($token)->authenticate();
+        return $this->response->array(compact('user') + compact('token'))->setStatusCode(200);
     }
 
     public function index()
@@ -60,6 +61,7 @@ class LoginController extends Controller
             return $this->response->error('Something went wrong');
         }
 
+        $followers = $user->followers;
         return $this->response->array(compact('user'));//->setStatusCode(200));
     }
 
@@ -93,15 +95,25 @@ class LoginController extends Controller
         //$user->delete();
     }
 
-    // TODO: get user_id from param, default is current user
-    public function getUserFollowers()
+    public function getUserFollowers(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
         if (!$user) {
             $this->response->errorUnauthorized('Token is invalid');
         }
-        $followers = $user->followers;
-        return $this->response->array(compact('followers'))->setStatusCode(200);
+        $parameters = $request->only('user_id');
+        if($parameters['user_id'] != null) {
+            $user2 = \App\User::where('Person_ID', intval($parameters['user_id']))->first();
+            if (!$user2) {
+                $this->response->errorNotFound('User with such id not found');
+            }
+            $followers = $user2->followers;
+            return $this->response->array(compact('followers'))->setStatusCode(200);
+        }
+        else {
+            $followers = $user->followers;
+            return $this->response->array(compact('followers'))->setStatusCode(200);
+        }
     }
 
     public function followUser(Request $request)

@@ -13,6 +13,7 @@ class User extends Authenticatable
     protected $table = 'Persons';
     public $timestamps = false;
     protected $primaryKey = 'Person_ID';
+    protected $appends = ['followers_list'];
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'Person_Login', 'Person_Email', 'Person_Password', 'Person_LastName', 'Person_FirstName', 'Person_Description',
+        'Person_Login', 'Person_Email', 'Person_Password', 'Person_LastName', 'Person_FirstName', 'Person_Description', 'Person_Avatar'
     ];
 
     /**
@@ -51,5 +52,16 @@ class User extends Authenticatable
     function unfollow(User $user)
     {
         $user->followers()->detach($this->Person_ID);
+    }
+
+    public function getFollowersListAttribute()
+    {
+        $array = [];
+        foreach ($this->followers as $follower)
+        {
+            $follower->appends = [];
+            array_push($array, $follower);
+        }
+        return $array;
     }
 }
