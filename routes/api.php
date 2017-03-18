@@ -32,6 +32,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
     $api->get('user', 'App\Http\Controllers\Auth\LoginController@show');
 
+    $api->post('user/avatar', 'App\Http\Controllers\Auth\LoginController@updateAvatar');
+
     $api->get('user/followers/', 'App\Http\Controllers\Auth\LoginController@getUserFollowers');
 
     $api->get('user/follow/', 'App\Http\Controllers\Auth\LoginController@followUser');

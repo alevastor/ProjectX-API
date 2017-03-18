@@ -57,8 +57,7 @@ class User extends Authenticatable
     public function getFollowersListAttribute()
     {
         $array = [];
-        foreach ($this->followers as $follower)
-        {
+        foreach ($this->followers as $follower) {
             $follower->appends = [];
             array_push($array, $follower);
         }
