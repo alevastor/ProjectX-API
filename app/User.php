@@ -10,8 +10,8 @@ class User extends Authenticatable
 {
     use Notifiable, EntrustUserTrait;
 
-    protected $table = 'Persons';
     public $timestamps = false;
+    protected $table = 'Persons';
     protected $primaryKey = 'Person_ID';
     protected $appends = ['followers_list'];
 
@@ -39,14 +39,14 @@ class User extends Authenticatable
         return $this->Person_Password;
     }
 
-    function followers()
-    {
-        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id');
-    }
-
     function follow(User $user)
     {
         $user->followers()->attach($this->Person_ID);
+    }
+
+    function followers()
+    {
+        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id');
     }
 
     function unfollow(User $user)

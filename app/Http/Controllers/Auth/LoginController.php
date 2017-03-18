@@ -65,7 +65,7 @@ class LoginController extends Controller
         }
 
         $followers = $user->followers;
-        return $this->response->array(compact('user'));//->setStatusCode(200));
+        return $this->response->array(compact('user'))->setStatusCode(200);
     }
 
     public function getToken()
@@ -83,19 +83,6 @@ class LoginController extends Controller
         }
 
         return $this->response->array(compact('refreshedToken'));
-    }
-
-    public function destroy()
-    {
-        $user = JWTAuth::parseToken()->authenticate();
-        if (!$user) {
-            // fail the delete process
-            return 'failed to delete user';
-        }
-
-        //delete the user
-        return 'user \'' . $user->name . '\' will be deleted';
-        //$user->delete();
     }
 
     public function getUserFollowers(Request $request)

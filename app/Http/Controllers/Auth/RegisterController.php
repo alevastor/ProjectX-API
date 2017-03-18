@@ -28,23 +28,6 @@ class RegisterController extends Controller
 
     use RegistersUsers;
 
-    protected function validator(array $data)
-    {
-        //TODO: https://laravel.com/docs/5.4/validation#available-validation-rules
-        $messages = [
-            'required' => 'Поле :attribute є обов\'язковим.',
-        ];
-        return Validator::make($data, [
-            'Person_Login' => 'required|max:255|unique:Persons',
-            'Person_Email' => 'required|email|max:255|unique:Persons',
-            'Person_Password' => 'required|min:6',
-            'Person_FirstName' => 'required|max:255',
-            'Person_LastName' => 'required|max:255',
-            'Person_Description' => 'max:255',
-            'Person_Avatar' => 'mimes:jpeg,jpg,png,gif|max:10000',
-        ], $messages);
-    }
-
     protected function postRegister(Request $request)
     {
         $parameters = $request->only('login', 'email', 'password', 'name', 'surname', 'description', 'avatar');
@@ -86,6 +69,23 @@ class RegisterController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
         return $this->response->array(compact('user') + compact('token'))->setStatusCode(200);
+    }
+
+    protected function validator(array $data)
+    {
+        //TODO: https://laravel.com/docs/5.4/validation#available-validation-rules
+        $messages = [
+            'required' => 'Поле :attribute є обов\'язковим.',
+        ];
+        return Validator::make($data, [
+            'Person_Login' => 'required|max:255|unique:Persons',
+            'Person_Email' => 'required|email|max:255|unique:Persons',
+            'Person_Password' => 'required|min:6',
+            'Person_FirstName' => 'required|max:255',
+            'Person_LastName' => 'required|max:255',
+            'Person_Description' => 'max:255',
+            'Person_Avatar' => 'mimes:jpeg,jpg,png,gif|max:10000',
+        ], $messages);
     }
 }
 	
