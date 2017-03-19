@@ -19,8 +19,6 @@ $api->version('v1', function ($api) {
     //Auth API (todo logout)
     $api->post('users/login', 'App\Http\Controllers\Auth\LoginController@authenticate');
     $api->post('users/register', 'App\Http\Controllers\Auth\RegisterController@postRegister');
-
-    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs');
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
@@ -36,7 +34,10 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('user/unfollow/', 'App\Http\Controllers\Api\V1\UserController@unfollowUser');
     // editing
     $api->post('user/avatar', 'App\Http\Controllers\Api\V1\UserController@updateAvatar');
+    //songs
+    $api->get('user/songs/', 'App\Http\Controllers\Api\V1\UserController@getUserSongs');
 
     // Song API
+    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs');
     $api->post('songs/add', 'App\Http\Controllers\Api\V1\SongController@uploadSong');
 });

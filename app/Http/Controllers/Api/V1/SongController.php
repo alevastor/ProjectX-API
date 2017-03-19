@@ -30,8 +30,6 @@ class SongController extends Controller
             $this->response->errorUnauthorized('Token is invalid');
         }
         $song = new Song();
-
-
         $parameters = $request->only('name', 'description', 'song');
         $parameters = array(
             'Song_Name' => $parameters['name'],
@@ -52,6 +50,7 @@ class SongController extends Controller
         $parameters = $request->only('name', 'description');
         $song->Song_Name = $parameters['name'];
         $song->Song_Description = $parameters['description'];
+        $song->Song_Person = $user->Person_ID;
         $song->save();
         return $song;
     }

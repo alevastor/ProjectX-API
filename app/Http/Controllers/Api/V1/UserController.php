@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -14,19 +15,23 @@ class UserController extends Controller
         return \App\User::all();
     }
 
-    public function show()
+    public function show(Request $request)
     {
-        try {
-            $user = JWTAuth::parseToken()->toUser();
-            if (!$user) {
-                $this->response->errorNotFound("User not found!");
-            }
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $ex) {
-            return $this->response->error('Something went wrong');
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user) {
+            $this->response->errorUnauthorized('Token is invalid');
         }
-
-        $followers = $user->followers;
-        return $this->response->array(compact('user'))->setStatusCode(200);
+        $parameters = $request->only('user_id');
+        if ($parameters['user_id'] != null) {
+            $user = \App\User::where('Person_ID', intval($parameters['user_id']))->first();
+            if (!$user) {
+                $this->response->errorNotFound('User with such id not found');
+            }
+            return $this->response->array(compact('user'))->setStatusCode(200);
+        }
+        else {
+            return $this->response->array(compact('user'))->setStatusCode(200);
+        }
     }
 
     public function getUserFollowers(Request $request)
@@ -115,6 +120,24 @@ class UserController extends Controller
             return $this->response->array(compact('user'))->setStatusCode(200);
         } else {
             return response()->json(['response' => -1], 400);
+        }
+    }
+
+    public function getUserSongs(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user) {
+            $this->response->errorUnauthorized('Token is invalid');
+        }
+        $parameters = $request->only('user_id');
+        if ($parameters['user_id'] != null) {
+            $user = \App\User::where('Person_ID', intval($parameters['user_id']))->first();
+            if (!$user) {
+                $this->response->errorNotFound('User with such id not found');
+            }
+            return $user->songs;
+        } else {
+            return $user->songs;
         }
     }
 }

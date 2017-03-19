@@ -13,4 +13,9 @@ class Song extends Model
     protected $fillable = [
         'Song_Name', 'Song_Description'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'Person_ID');
+    }
 }

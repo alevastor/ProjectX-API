@@ -62,4 +62,9 @@ class User extends Authenticatable
         }
         return $array;
     }
+
+    public function songs()
+    {
+        return $this->hasMany('App\Song', 'Song_Person');
+    }
 }
