@@ -16,20 +16,27 @@ use Illuminate\Http\Request;
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
+    //Auth API (todo logout)
     $api->post('users/login', 'App\Http\Controllers\Auth\LoginController@authenticate');
     $api->post('users/register', 'App\Http\Controllers\Auth\RegisterController@postRegister');
+
+    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs');
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
-    $api->get('users', 'App\Http\Controllers\Auth\LoginController@index');
-    $api->get('user', 'App\Http\Controllers\Auth\LoginController@show');
-    $api->post('user/avatar', 'App\Http\Controllers\Auth\LoginController@updateAvatar');
-    $api->get('user/followers/', 'App\Http\Controllers\Auth\LoginController@getUserFollowers');
-    $api->get('user/follow/', 'App\Http\Controllers\Auth\LoginController@followUser');
-    $api->get('user/unfollow/', 'App\Http\Controllers\Auth\LoginController@unfollowUser');
+    // Auth API
     $api->get('token', 'App\Http\Controllers\Auth\LoginController@getToken');
-});
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    // User API
+    $api->get('users', 'App\Http\Controllers\Api\V1\UserController@index');
+    $api->get('user', 'App\Http\Controllers\Api\V1\UserController@show');
+    // following system
+    $api->get('user/followers/', 'App\Http\Controllers\Api\V1\UserController@getUserFollowers');
+    $api->get('user/follow/', 'App\Http\Controllers\Api\V1\UserController@followUser');
+    $api->get('user/unfollow/', 'App\Http\Controllers\Api\V1\UserController@unfollowUser');
+    // editing
+    $api->post('user/avatar', 'App\Http\Controllers\Api\V1\UserController@updateAvatar');
+
+    // Song API
+    $api->post('songs/add', 'App\Http\Controllers\Api\V1\SongController@uploadSong');
 });
