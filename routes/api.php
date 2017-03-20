@@ -16,27 +16,28 @@ use Illuminate\Http\Request;
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
-    $api->get('hello', 'App\Http\Controllers\HomeController@index');
-    $api->get('users/{user_id}/roles/{role_name}', 'App\Http\Controllers\HomeController@attachUserRole');
-    $api->get('users/{user_id}/roles', 'App\Http\Controllers\HomeController@getUserRole');
-
-    $api->post('role/permission/add', 'App\Http\Controllers\HomeController@attachPermission');
-    $api->get('role/{role_name}/permissions', 'App\Http\Controllers\HomeController@getPermissions');
-
-    $api->post('login', 'App\Http\Controllers\Auth\LoginController@authenticate');
-    $api->post('register', 'App\Http\Controllers\Auth\RegisterController@postRegister');
+    //Auth API (todo logout)
+    $api->post('users/login', 'App\Http\Controllers\Auth\LoginController@authenticate');
+    $api->post('users/register', 'App\Http\Controllers\Auth\RegisterController@postRegister');
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
-    $api->get('users', 'App\Http\Controllers\Auth\LoginController@index');
-
-    $api->get('user', 'App\Http\Controllers\Auth\LoginController@show');
-
+    // Auth API
     $api->get('token', 'App\Http\Controllers\Auth\LoginController@getToken');
 
-    $api->get('user/delete', 'App\Http\Controllers\Auth\LoginController@destroy');
-});
+    // User API
+    $api->get('users', 'App\Http\Controllers\Api\V1\UserController@index');
+    $api->get('user', 'App\Http\Controllers\Api\V1\UserController@show');
+    // following system
+    $api->get('user/followers/', 'App\Http\Controllers\Api\V1\UserController@getUserFollowers');
+    $api->get('user/follow/', 'App\Http\Controllers\Api\V1\UserController@followUser');
+    $api->get('user/unfollow/', 'App\Http\Controllers\Api\V1\UserController@unfollowUser');
+    // editing
+    $api->post('user/avatar', 'App\Http\Controllers\Api\V1\UserController@updateAvatar');
+    //songs
+    $api->get('user/songs/', 'App\Http\Controllers\Api\V1\UserController@getUserSongs');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    // Song API
+    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs');
+    $api->post('songs/add', 'App\Http\Controllers\Api\V1\SongController@uploadSong');
 });

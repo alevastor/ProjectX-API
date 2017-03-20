@@ -4,11 +4,15 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, EntrustUserTrait;
+    use Notifiable;
+
+    public $timestamps = false;
+    protected $table = 'Persons';
+    protected $primaryKey = 'Person_ID';
+    protected $appends = ['followers_list'];
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'Person_Login', 'Person_Email', 'Person_Password', 'Person_LastName', 'Person_FirstName', 'Person_Description', 'Person_Avatar'
     ];
 
     /**
@@ -25,6 +29,42 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'Person_Password', 'Person_Email', 'pivot', 'followers',
     ];
+
+    //костиль для JWT_Auth з нестандартним паролем
+    public function getAuthPassword()
+    {
+        return $this->Person_Password;
+    }
+
+    function follow(User $user)
+    {
+        $user->followers()->attach($this->Person_ID);
+    }
+
+    function followers()
+    {
+        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id');
+    }
+
+    function unfollow(User $user)
+    {
+        $user->followers()->detach($this->Person_ID);
+    }
+
+    public function getFollowersListAttribute()
+    {
+        $array = [];
+        foreach ($this->followers as $follower) {
+            $follower->appends = [];
+            array_push($array, $follower);
+        }
+        return $array;
+    }
+
+    public function songs()
+    {
+        return $this->hasMany('App\Song', 'Song_Person');
+    }
 }
