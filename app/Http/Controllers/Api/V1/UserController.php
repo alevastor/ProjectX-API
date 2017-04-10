@@ -15,6 +15,7 @@ class UserController extends Controller
         return \App\User::all();
     }
 
+    //user_id
     public function show(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -34,6 +35,7 @@ class UserController extends Controller
         }
     }
 
+    //user_id
     public function getUserFollowers(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -54,6 +56,7 @@ class UserController extends Controller
         }
     }
 
+    //user_id
     public function followUser(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -76,6 +79,7 @@ class UserController extends Controller
         }
     }
 
+    // user_id
     public function unfollowUser(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();

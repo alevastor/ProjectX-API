@@ -38,6 +38,6 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('user/songs/', 'App\Http\Controllers\Api\V1\UserController@getUserSongs');
 
     // Song API
-    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs');
+    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs'); //temporary
     $api->post('songs/add', 'App\Http\Controllers\Api\V1\SongController@uploadSong');
 });

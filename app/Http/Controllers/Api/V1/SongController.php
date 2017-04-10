@@ -55,6 +55,7 @@ class SongController extends Controller
         return $song;
     }
 
+    //no params
     public function getSongs()
     {
         return Song::all();
