@@ -1,0 +1,160 @@
+Адреса аватарок:
+	http://api.focus.zzz.com.ua/lrvl/storage/app/public/avatars/*назва файлу*
+	Наприклад
+	http://api.focus.zzz.com.ua/lrvl/storage/app/public/avatars/default.jpg
+Адреса пісень:
+	http://api.focus.zzz.com.ua/lrvl/storage/app/users/*id_користовача*/music/*назва файлу*
+	Наприклад:
+	http://api.focus.zzz.com.ua/lrvl/storage/app/users/2/music/1489913297.mp3
+
+Приклад інфи про юзера:
+
+{"user": 
+  {
+"Person_ID": 2,
+
+   "Person_LastName": "Topoviy",
+
+   "Person_FirstName": "Admin",
+
+   "Person_Login": "admin2",
+   "Person_Description": "Naykrashiy y sviti admin (til'ky zliy)",
+
+   "Person_Avatar": "default.jpg",
+
+   "followers_list": [
+      
+      {
+"Person_ID": 1,
+
+       "Person_LastName": "Topoviy",
+
+       "Person_FirstName": "Admin",
+
+       "Person_Login": "admin",
+
+       "Person_Description": "Naykrashiy y sviti admin (til'ky zliy)",
+
+       "Person_Avatar": "default.jpg"
+},
+
+      {
+"Person_ID": 4,
+
+       "Person_LastName": "User",
+
+       "Person_FirstName": "Test",
+
+       "Person_Login": "test_user",
+
+       "Person_Description": "asdaqwewqeqwe",
+
+       "Person_Avatar": "default.jpg"
+
+      }
+    
+   ]
+  
+}
+
+Реєстрація
+	url (метод POST)
+		http://api.focus.zzz.com.ua/method/users/register
+	на вхід (в дужках тип даних)
+		email (string)
+			required|email|max:255|unique
+		password (string)
+			required|min:6
+		name (string)
+			required|max:255
+		login (string)
+			required|max:255|unique
+		surname (string)
+			required|max:255
+		description (string)
+			max:255
+		avatar (file)
+			mimes:jpeg,jpg,png,gif|max:10000
+	на вихід
+		інфа про юзера + токен для роботи
+		або масив "error" зі списком помилок, статус помилки 400
+Авторизація
+	url (метод POST)
+		http://api.focus.zzz.com.ua/method/users/login
+	на вхід (в дужках тип даних)
+		email (string)
+			required
+		password (string)
+			required
+	на вихід
+		інфа про юзера + токен для роботи
+		помилка при вході: {
+"error":"invalid_credentials"
+}, статус помилки 401
+
+ЗАПИТИ З АВТОРИЗАЦІЄЮ:
+
+Інформація про користувача
+	url (метод GET)
+		http://api.focus.zzz.com.ua/method/user
+	на вхід (в дужках тип даних)
+		user_ID (int)
+	на вихід
+		інфа про юзера по user_id, якщо не вказаний, то поточного користувача по токену
+Список підписників
+	url (метод GET)
+		http://api.focus.zzz.com.ua/method/user/followers
+	на вхід (в дужках тип даних)
+		user_ID (int)
+	на вихід
+		масив followers із підписниками та інформацією про них, якщо user_id не вказаний - список підписників поточного користувача
+Підписатись
+	url (метод GET)
+		http://api.focus.zzz.com.ua/method/user/follow
+	на вхід (в дужках тип даних)
+		user_ID (int)
+			required
+	на вихід
+		responce із кодом (1 - успіх, 4 - вже підписаний, -1 - помилка)
+Відписатись	
+	url (метод GET)
+		http://api.focus.zzz.com.ua/method/user/unfollow
+	на вхід (в дужках тип даних)
+		user_ID (int)
+			required
+	на вихід
+		responce із кодом (1 - успіх, 4 - вже відписаний, -1 - помилка)
+Змінити аватар
+	url (метод POST)
+		http://api.focus.zzz.com.ua/method/user/avatar
+	на вхід (в дужках тип даних)
+		avatar (file)
+			required (іншої валідації, як в реєстрації, поки немає)
+	на вихід
+		інформація про користувача, або responce -1, якщо помилка
+Додати пісню
+	url (метод POST)
+		http://api.focus.zzz.com.ua/method/songs/add
+	на вхід (в дужках тип даних)
+		name (string)
+			max:255
+		description (string)
+			max:1000
+		song (file)
+			required|mimes:audio/mpeg,audio/mp3,audio/mpeg3,mpga|max:10000 (це по суті тільки mp3 файли різного типу, але то не точно)
+	на вихід
+		інформація про пісню виду:
+{
+"Song": 
+   {
+"Song_File": "1489913297.mp3",
+
+    "Song_Name": "Wax - California",
+
+    "Song_Description": "Hey, some desc",
+
+    "Song_ID": 12
+  
+   }
+
+}
