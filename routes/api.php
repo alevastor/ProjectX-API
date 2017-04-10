@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 $api = app('Dingo\Api\Routing\Router');
 
+//version 0.3
 $api->version('v1', function ($api) {
     //Auth API (todo logout)
     $api->post('users/login', 'App\Http\Controllers\Auth\LoginController@authenticate');
@@ -38,6 +39,6 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('user/songs/', 'App\Http\Controllers\Api\V1\UserController@getUserSongs');
 
     // Song API
-    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs');
+    $api->get('songs', 'App\Http\Controllers\Api\V1\SongController@getSongs'); //temporary
     $api->post('songs/add', 'App\Http\Controllers\Api\V1\SongController@uploadSong');
 });
