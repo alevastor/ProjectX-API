@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 $api = app('Dingo\Api\Routing\Router');
 
+//version 0.3
 $api->version('v1', function ($api) {
     //Auth API (todo logout)
     $api->post('users/login', 'App\Http\Controllers\Auth\LoginController@authenticate');
